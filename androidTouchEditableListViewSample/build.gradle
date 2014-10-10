@@ -1,0 +1,24 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 11
+    buildToolsVersion "20.0.0"
+
+    defaultConfig {
+        applicationId "be.trojkasoftware.android.sample.toucheditablelistview"
+        minSdkVersion 14
+        targetSdkVersion 14
+    }
+
+    buildTypes {
+        release {
+            runProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+}
+
+dependencies {
+    compile project(':androidTouchEditableListView')
+    compile 'com.android.support:support-v4:18.+'
+}
