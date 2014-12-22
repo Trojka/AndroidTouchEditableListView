@@ -1,20 +1,19 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 11
+    compileSdkVersion 15
     buildToolsVersion "20.0.0"
-
     defaultConfig {
-        applicationId "be.trojkasoftware.android.toucheditablelistview"
-        minSdkVersion 14
-        targetSdkVersion 14
+        minSdkVersion 15
+        targetSdkVersion 15
     }
-
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
+    }
+    productFlavors {
     }
 }
 
