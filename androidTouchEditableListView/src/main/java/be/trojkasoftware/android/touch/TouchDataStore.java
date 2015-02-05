@@ -24,7 +24,8 @@ public class TouchDataStore {
             switch (action) {
             case MotionEvent.ACTION_DOWN:
         	case MotionEvent.ACTION_POINTER_DOWN:
-        		mPointerDownOrder.add(pointerId);
+                if(!mPointerDownOrder.contains(pointerId))
+            		mPointerDownOrder.add(pointerId);
         		
             	mTouchStore.get(pointerId).posXDown = (int)event.getX(i);
             	mTouchStore.get(pointerId).posYDown = (int)event.getY(i);

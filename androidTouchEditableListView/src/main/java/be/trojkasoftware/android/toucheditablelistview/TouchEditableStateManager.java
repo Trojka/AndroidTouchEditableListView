@@ -34,7 +34,7 @@ public class TouchEditableStateManager {
         switch (action) {
         case MotionEvent.ACTION_DOWN:
     	case MotionEvent.ACTION_POINTER_DOWN:
-//        	Log.i(TAG, "onTouchEvent ACTION_DOWN[PointerIndex:" + pointerIndex + "][PointerId:" + pointerId + "]X["+(int)event.getX(pointerIndex)+"]Y["+(int)event.getY(pointerIndex)+"]");
+        	Log.i(TAG, "onTouchEvent ACTION_DOWN[PointerIndex:" + pointerIndex + "][PointerId:" + pointerId + "]X["+(int)event.getX(pointerIndex)+"]Y["+(int)event.getY(pointerIndex)+"]");
     		//Log.i(TAG, "onTouchEvent: Action[ACTION_DOWN]FirstVisiblePosition[" + mListView.getFirstVisiblePosition() + "]ChildAtIndexTag[" + mListView.getChildAt(0).getTag() + "]ChildAtIndexTop[" + mListView.getChildAt(0).getTop() + "]");
     		//Log.i(TAG, "onTouchEvent: Action[ACTION_DOWN]LastVisiblePosition[" + mListView.getLastVisiblePosition() + "]ChildAtEndTag[" + mListView.getChildAt(mListView.getChildCount()-1).getTag() + "]ChildAtEndBottom[" + mListView.getChildAt(mListView.getChildCount()-1).getBottom() + "]Height[" + mListView.getHeight() + "]");
 
@@ -54,42 +54,31 @@ public class TouchEditableStateManager {
                     Log.i(TAG, "onTouchEvent: Action[ACTION_DOWN] First touch: we always consider this TOP");
     	        	
     	        	mTopItemPosition = currentTouchPosition;
-    	        	//mTopDownYOnSecondTouch = (int)event.getY(pointerIndex);
     	        	mPointerIdTop = pointerId;
                     Log.i(TAG, "onTouchEvent: Action[ACTION_DOWN] PointerIdTop[" + mPointerIdTop + "]");
 
-    	        	//mFirstPointerId = pointerId;    	        	
-    	        	//mFirstPointerDownX = (int)event.getX(pointerIndex);
-    	        	//mFirstPointerDownY = (int)event.getY(pointerIndex);
-    	        	
             	}
             	if(pointerIndex == 1 && mState == STATE_NORMAL) {
 
                     Log.i(TAG, "onTouchEvent: Action[ACTION_DOWN] Second touch");
 
             		if(Math.abs(currentTouchPosition - mTopItemPosition) != 1) {
-                        Log.i(TAG, "onTouchEvent: Action[ACTION_DOWN] Nothing to do (but not sure why)");
+                        Log.i(TAG, "onTouchEvent: Action[ACTION_DOWN] Touched items are not consecutive: nothing to do");
             		}
             		else if(currentTouchPosition > mTopItemPosition) {
                         Log.i(TAG, "onTouchEvent: Action[ACTION_DOWN] Current is BOTTOM: no need to switch");
             			mBottomItemPosition = currentTouchPosition;
-            			//mBottomDownYOnSecondTouch = (int)event.getY(pointerIndex);
             			mPointerIdBottom = pointerId;
 
                         Log.i(TAG, "onTouchEvent: Action[ACTION_DOWN] PointerIdTop[" + mPointerIdTop + "] PointerIdBottom[" + mPointerIdBottom + "]");
 
-            			// only when the second touch occurs do we start monitoring the first
-            			//mTopDownYOnSecondTouch = mLastTopMoveY;
-        	        	
         	        	mState = STATE_INSERT_INBETWEEN;
             		}
             		else {
                         Log.i(TAG, "onTouchEvent: Action[ACTION_DOWN] Current is TOP: switch with previous top");
             			mBottomItemPosition = mTopItemPosition;
-            			//mBottomDownYOnSecondTouch = mLastTopMoveY; //mTopDownY;
             			mPointerIdBottom = mPointerIdTop;
             			mTopItemPosition = currentTouchPosition;
-            			//mTopDownYOnSecondTouch = (int)event.getY(pointerIndex);
             			mPointerIdTop = pointerId;
 
                         Log.i(TAG, "onTouchEvent: Action[ACTION_DOWN] PointerIdTop[" + mPointerIdTop + "] PointerIdBottom[" + mPointerIdBottom + "]");
@@ -99,7 +88,7 @@ public class TouchEditableStateManager {
             	}
         	}
         	
-//    		Log.i(TAG, "onTouchEvent: Action[ACTION_DOWN]TopItemPosition[" + mTopItemPosition + "]BottomItemPosition[" + mBottomItemPosition + "]");
+    		Log.i(TAG, "onTouchEvent: Action[ACTION_DOWN]TopItemPosition[" + mTopItemPosition + "]BottomItemPosition[" + mBottomItemPosition + "]");
 
     		View v = mListView.getChildAt(mTopItemPosition - mListView.getFirstVisiblePosition());
         	mOriginalTopItemY = v.getTop();
@@ -119,29 +108,29 @@ public class TouchEditableStateManager {
         	
         	int pointerCount = event.getPointerCount();
 
-    		// we only start doing something if at least one pointer moved 20 pixels from its touchdown position
-        	int topPointerDeviation = 0;
-        	int bottomPointerDeviation = 0;
-        	for(int i = 0; i < pointerCount; i++) {
-//        		if (mFirstPointerId == event.getPointerId(i)) {   	
-//		        	//mFirstPointerMoveX = (int)event.getX(pointerIndex);
-//		        	//mFirstPointerMoveY = (int)event.getY(pointerIndex);
-//        		}
-				if (mPointerIdTop == event.getPointerId(i)) {
-    				//mPreviousTopMoveY = mLastTopMoveY;
-    				//mLastTopMoveY = (int) event.getY(i);
-					topPointerDeviation = Math.abs(mTouchDataStore.get(mPointerIdTop).posYOnPointerDown.get(mTouchDataStore.getPointerId(mTouchDataStore.size() - 1)) /*mTopDownYOnSecondTouch*/ - (int) event.getY(i));
-				}
-				if (mPointerIdBottom == event.getPointerId(i)) {
-    				//mLastBottomMoveY = (int) event.getY(i);
-					bottomPointerDeviation = Math.abs(mTouchDataStore.get(mPointerIdBottom).posYOnPointerDown.get(mTouchDataStore.getPointerId(mTouchDataStore.size() - 1)) /*mBottomDownYOnSecondTouch*/ - (int) event.getY(i));
-				}
-        	}
-        	
-//        	if(topPointerDeviation < mMinimalDirectionalMovement
-//        			&& bottomPointerDeviation < mMinimalDirectionalMovement) {
-//        		return false;
+//    		// we only start doing something if at least one pointer moved 20 pixels from its touchdown position
+//        	int topPointerDeviation = 0;
+//        	int bottomPointerDeviation = 0;
+//        	for(int i = 0; i < pointerCount; i++) {
+////        		if (mFirstPointerId == event.getPointerId(i)) {
+////		        	//mFirstPointerMoveX = (int)event.getX(pointerIndex);
+////		        	//mFirstPointerMoveY = (int)event.getY(pointerIndex);
+////        		}
+//				if (mPointerIdTop == event.getPointerId(i)) {
+//    				//mPreviousTopMoveY = mLastTopMoveY;
+//    				//mLastTopMoveY = (int) event.getY(i);
+//					topPointerDeviation = Math.abs(mTouchDataStore.get(mPointerIdTop).posYOnPointerDown.get(mTouchDataStore.getPointerId(mTouchDataStore.size() - 1)) /*mTopDownYOnSecondTouch*/ - (int) event.getY(i));
+//				}
+//				if (mPointerIdBottom == event.getPointerId(i)) {
+//    				//mLastBottomMoveY = (int) event.getY(i);
+//					bottomPointerDeviation = Math.abs(mTouchDataStore.get(mPointerIdBottom).posYOnPointerDown.get(mTouchDataStore.getPointerId(mTouchDataStore.size() - 1)) /*mBottomDownYOnSecondTouch*/ - (int) event.getY(i));
+//				}
 //        	}
+//
+////        	if(topPointerDeviation < mMinimalDirectionalMovement
+////        			&& bottomPointerDeviation < mMinimalDirectionalMovement) {
+////        		return false;
+////        	}
         	
         	if (mInitialMainDirection == DIRECTION_NONE && getMainDirection(mTouchDataStore.getPointerId(0)) == DIRECTION_NONE) {
         		return false;
@@ -209,15 +198,33 @@ public class TouchEditableStateManager {
     			//		and the last item is not beyond the bottom of the listview
     			//	then there is no need to scroll
             	if(isScrollable()) {
+                    int lastTopMoveY = mTouchDataStore.get(mPointerIdTop).getMoveY(0);
+                    //int topDownYOnSecondTouch = mTouchDataStore.get(mPointerIdTop).posYOnPointerDown.get(mTouchDataStore.getPointerId(mTouchDataStore.size() - 1));
+                    if(mTouchDataStore.size() != 2)
+                    {
+                        throw new AssertionError("Size must be 2");
+                    }
+                    if(mTouchDataStore.get(mTouchDataStore.getPointerId(mTouchDataStore.size() - 1)) == null)
+                    {
+                        throw new AssertionError("PointerId must have entry");
+                    }
+                    if(mTouchDataStore.get(mTouchDataStore.getPointerId(mTouchDataStore.size() - 1)).posYOnPointerDown == null)
+                    {
+                        throw new AssertionError("PointerId must have history");
+                    }
+                    if(!mTouchDataStore.get(mTouchDataStore.getPointerId(mTouchDataStore.size() - 1)).posYOnPointerDown.containsKey(mPointerIdTop))
+                    {
+                        throw new AssertionError("PointerId must have history for pointeridtop");
+                    }
+                    int topDownYOnSecondTouch = mTouchDataStore.get(mTouchDataStore.getPointerId(mTouchDataStore.size() - 1)).posYOnPointerDown.get(mPointerIdTop);
                     Log.i(TAG, "onTouchEvent.ACTION_MOVE.isScrollable "
                             // the position of the top pointer during this move event
-                            + "PointerTopMoveY[" + mTouchDataStore.get(mPointerIdTop).getMoveY(0) + "]"
+                            + "PointerTopMoveY[" + lastTopMoveY + "]"
                             // the position of the top pointer when the last pointer went down
-                            + "PointerTopDownY[" + mTouchDataStore.get(mPointerIdTop).posYOnPointerDown.get(mTouchDataStore.getPointerId(mTouchDataStore.size() - 1)) + "]");
+                            + "PointerTopDownYOnSecondTouch[" + topDownYOnSecondTouch + "]");
             		mCurrentTopItemY = mOriginalTopItemY +
                             Math.min((int)(mElasticity * (
-                                    mTouchDataStore.get(mPointerIdTop).getMoveY(0) /*mLastTopMoveY*/
-                                            - mTouchDataStore.get(mPointerIdTop).posYOnPointerDown.get(mTouchDataStore.getPointerId(mTouchDataStore.size() - 1)) /*mTopDownYOnSecondTouch*/))
+                                    lastTopMoveY /*mLastTopMoveY*/ - topDownYOnSecondTouch /*mTopDownYOnSecondTouch*/))
                                     , mMaxStretchHeight / 2);
             	}
             	mListView.setSelectionFromTop(mTopItemPosition, mCurrentTopItemY);
